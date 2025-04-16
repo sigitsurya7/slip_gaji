@@ -27,6 +27,16 @@ const rupiah = (number)=>{
   }).format(number);
 }
 
+const getCurrentDate = () => {
+  const today = new Date();
+  
+  const day = today.getDate();  // Tanggal (1-31)
+  const month = today.getMonth() + 1;  // Bulan (0-11), ditambah 1 agar sesuai (1-12)
+  const year = today.getFullYear();  // Tahun (YYYY)
+
+  return `${day}-${month}-${year}`;
+};
+
 app.post('/generate-pdf', async (req, res) => {
   try {
     const data = req.body;
@@ -68,7 +78,13 @@ app.post('/generate-pdf', async (req, res) => {
       .replace('{{pendapatan_rows}}', pendapatanRows)
       .replace('{{potongan_rows}}', potonganRows)
       .replace('{{total_pendapatan}}', rupiah(totalPendapatan))
-      .replace('{{total_potongan}}', rupiah(totalPotongan));
+      .replace('{{total_potongan}}', rupiah(totalPotongan))
+      .replace('{{alamat}}', data.profile.alamat)
+      .replace('{{kota}}', data.profile.kota)
+      .replace('{{nama_bendahara}}', data.profile.nama_bendahara)
+      .replace('{{nama_perusahaan}}', data.profile.nama_perusahaan)
+      .replace('{{periode}}', data.profile.periode)
+      .replace('{{tanggal}}', getCurrentDate())
 
 
     const browser = await puppeteer.launch({

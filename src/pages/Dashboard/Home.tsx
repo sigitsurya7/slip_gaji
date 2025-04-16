@@ -14,13 +14,15 @@ type SlipState = {
   dataDiri: Record<string, string>
   pendapatan: Pendapatan
   potongan: Potongan
-  gaji_bersih: number
+  gaji_bersih: number,
+  profile: Record<string, string | number>
 }
 
 
 const groupRowData = (
   columns: string[],
-  row: (string | number)[]
+  row: (string | number)[],
+  profile: Record<string, string | number>
 ): SlipState => {
   const pendapatan: Pendapatan = []
   const potongan: Potongan = []
@@ -59,7 +61,8 @@ const groupRowData = (
     dataDiri,
     pendapatan,
     potongan,
-    gaji_bersih
+    gaji_bersih,
+    profile
   }
 }
 
@@ -85,7 +88,7 @@ export default function Home() {
 
 
   const handleExportClick = async () => {
-    const allData: SlipState[] = data.map(row => groupRowData(columns, row))
+    const allData: SlipState[] = data.map(row => groupRowData(columns, row, profile))
   
     for (const [index, value] of allData.entries()) {
       const nama = value.dataDiri.nama || `Baris ${index + 1}`
