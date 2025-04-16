@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Slip Gaji</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+      padding: 2px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1px;
+    }
+
+    .info, .table {
+      width: 100%;
+      margin-bottom: 1px;
+    }
+
+    .info td {
+      padding: 4px 8px;
+      vertical-align: top;
+    }
+
+    .table th, .table td {
+      border: 1px solid #000;
+      padding: 6px;
+      text-align: left;
+    }
+
+    .table {
+      border-collapse: collapse;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-top: 1px;
+    }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .footer {
+      margin-top: 10px;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div>
+      <h2>PT. PUSAT CARA CARA</h2>
+      <p>Jl. R.E. Martadinata No. 100, Jakarta Pusat<br />
+        Tlp./Fax (021) 12345678</p>
+    </div>
+    <div>
+      <h3>SLIP GAJI</h3>
+      <p><em>Periode: {{periode}}</em></p>
+    </div>
+  </div>
+
+  <table class="info">
+    <tr>
+      <td><strong>NIK</strong></td>
+      <td>: {{nik}}</td>
+      <td><strong>Jabatan</strong></td>
+      <td>: {{jabatan}}</td>
+    </tr>
+    <tr>
+      <td><strong>Nama Karyawan</strong></td>
+      <td>: {{nama}}</td>
+      <td><strong>NPWP</strong></td>
+      <td>: {{npwp}}</td>
+    </tr>
+  </table>
+  <div style="display: flex; gap: 1rem;">
+    <div style="width:100%">
+      <div class="section-title">PENDAPATAN</div>
+      <table class="table">
+        <tr>
+          <th>Uraian</th>
+          <th class="text-right">Jumlah</th>
+        </tr>
+        {{pendapatan_rows}}
+        <tr>
+          <td><strong>JUMLAH PENDAPATAN</strong></td>
+          <td class="text-right"><strong>{{total_pendapatan}}</strong></td>
+        </tr>
+      </table>
+    </div>
+
+    <div style="width:100%">
+      <div class="section-title">POTONGAN</div>
+      <table class="table">
+        <tr>
+          <th>Uraian</th>
+          <th class="text-right">Jumlah</th>
+        </tr>
+        {{potongan_rows}}
+        <tr>
+          <td><strong>JUMLAH POTONGAN</strong></td>
+          <td class="text-right"><strong>{{total_potongan}}</strong></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title">GAJI BERSIH</div>
+  <table class="table">
+    <tr>
+      <td><strong>GAJI BERSIH</strong></td>
+      <td class="text-right"><strong>{{gaji_bersih}}</strong></td>
+    </tr>
+    <tr>
+        <td colspan="2"><em style="text-transform: capitalize;">Terbilang: {{terbilang}}</em></td>
+    </tr>
+  </table>
+
+  <div class="footer">
+    <p>Jakarta, {{tanggal}}<br /><br />Bendahara,<br /><strong>M. FATIH</strong></p>
+  </div>
+</body>
+</html>
