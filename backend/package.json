@@ -3,18 +3,22 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Zeevana",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "@develoka/angka-terbilang-js": "^1.4.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "nodemon": "^3.1.9",
     "pdf-lib": "^1.17.1",
     "puppeteer": "^24.6.1",
-    "terbilang-js": "^1.0.1"
+    "qrcode": "^1.5.4",
+    "terbilang-js": "^1.0.1",
+    "whatsapp-web.js": "^1.27.0"
   }
 }

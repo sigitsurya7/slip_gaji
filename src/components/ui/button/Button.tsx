@@ -39,7 +39,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-lg transition ${className} ${
+      className={`inline-flex items-center justify-center gap-2 rounded-lg transition active:translate-x-1 active:translate-y-1 ${className} ${
         sizeClasses[size]
       } ${variantClasses[variant]} ${
         disabled ? "cursor-not-allowed opacity-50" : ""

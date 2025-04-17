@@ -19,6 +19,7 @@ import AppLayout from "./layout/AppLayout";
 import { ScrollToTop } from "./components/common/ScrollToTop";
 import Home from "./pages/Dashboard/Home";
 import { Toaster } from 'react-hot-toast'
+import WhatsAppAuth from "./pages/WhatsApp/WhatsAppAuth";
 
 export default function App() {
   return (
@@ -41,6 +42,9 @@ export default function App() {
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/blank" element={<Blank />} />
+
+            {/* Whatsapp */}
+            <Route path="/whatsapp" element={<WhatsAppAuth />} />
 
             {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />

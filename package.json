@@ -4,7 +4,9 @@
   "version": "2.0.2",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev:frontend": "vite",
+    "dev:backend": "cd backend && npm run dev",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -21,6 +23,7 @@
     "apexcharts": "^4.1.0",
     "axios": "^1.8.4",
     "clsx": "^2.1.1",
+    "concurrently": "^9.1.2",
     "flatpickr": "^4.6.13",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
@@ -32,6 +35,7 @@
     "react-dropzone": "^14.3.5",
     "react-helmet-async": "^2.0.5",
     "react-hot-toast": "^2.5.2",
+    "react-icons": "^5.5.0",
     "react-router": "^7.1.5",
     "swiper": "^11.2.3",
     "tailwind-merge": "^3.0.1",

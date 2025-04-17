@@ -5,9 +5,16 @@ const path = require('path');
 const puppeteer = require('puppeteer');
 const app = express();
 const angkaTerbilang = require('@develoka/angka-terbilang-js')
+const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
+const qrcode = require('qrcode');
 
 app.use(cors());
 app.use(express.json());
+
+const port = 5000;
+
+let qrCodeData = null;
+let client;
 
 // Pastikan folder slips sudah ada
 const slipsDir = path.join(__dirname, 'slips');
@@ -71,8 +78,6 @@ app.post('/generate-pdf', async (req, res) => {
       .replace('{{nik}}', data.dataDiri.nik)
       .replace('{{npwp}}', data.dataDiri.npwp)
       .replace('{{jabatan}}', data.dataDiri.jabatan)
-      .replace('{{periode}}', data.periode)
-      .replace('{{tanggal}}', data.tanggal)
       .replace('{{gaji_bersih}}', rupiah(data.gaji_bersih))
       .replace('{{terbilang}}', terbilang(data.gaji_bersih))
       .replace('{{pendapatan_rows}}', pendapatanRows)
@@ -113,6 +118,78 @@ app.post('/generate-pdf', async (req, res) => {
     res.status(500).json({ message: 'Terjadi kesalahan saat generate PDF' });
   }
 });
+
+app.get('/qr', async (req, res) => {
+    if (client.info && client.info.pushname) {
+        return res.status(200).json({ message: 'Sudah terautentikasi' });
+    }
+
+    if (!qrCodeData) {
+        return res.status(500).json({ message: 'Client belum diinisialisasi.' });
+    }
+
+    try {
+        const qrImage = await qrcode.toDataURL(qrCodeData);
+        res.status(200).json({ qr: qrImage });
+    } catch (err) {
+        res.status(500).json({ message: 'Error generating QR code.', error: err.message });
+    }
+});
+
+client = new Client({
+  authStrategy: new LocalAuth({ clientId: 'slip-gaji' }),
+  puppeteer: {
+    headless: true,
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  },
+});
+
+client.on('qr', (qr) => {
+  qrCodeData = qr;
+  console.log('QR RECEIVED', qr);
+});
+
+client.on('ready', () => {
+  console.log('WhatsApp Client is ready!');
+});
+
+client.on('authenticated', () => {
+  console.log('WhatsApp authenticated');
+});
+
+client.on('auth_failure', msg => {
+  console.error('AUTHENTICATION FAILURE', msg);
+});
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+app.post('/send-wa', async (req, res) => {
+  try {
+    const { nama, nomor } = req.body;
+    const filename = `${nama.replace(/\s+/g, "_")}_slip_gaji.pdf`;
+    const filePath = path.join(__dirname, 'slips', filename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ message: 'File tidak ditemukan' });
+    }
+
+    const media = MessageMedia.fromFilePath(filePath);
+    const phoneWithSuffix = nomor.includes('@c.us') ? nomor : nomor + '@c.us';
+
+    const salamPembuka = `Halo ${nama}, ini dari bagian keuangan. Mohon izin kirim slip gaji bulan ini ya 🙏`
+    await client.sendMessage(phoneWithSuffix, salamPembuka)
+
+    await sleep(4000)
+
+    await client.sendMessage(phoneWithSuffix, media);
+    res.json({ message: 'Slip gaji berhasil dikirim ke WhatsApp!' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Gagal mengirim WhatsApp', error: err.message });
+  }
+});
+
+client.initialize();
 
 app.listen(3001, () => {
   console.log('Server running on http://localhost:3001');
