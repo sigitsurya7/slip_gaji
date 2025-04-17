@@ -1,0 +1,21 @@
+[
+  {
+    "to": "6285156975494",
+    "message": "apa iya testing lagi",
+    "status": "failed",
+    "timestamp": "2025-04-17T06:44:32.998Z",
+    "error": "Evaluation failed: TypeError: Cannot read properties of undefined (reading 'sendSeen')\n    at pptr://__puppeteer_evaluation_script__:7:37"
+  },
+  {
+    "to": "6285156975494",
+    "message": "masa iya testing lagi si",
+    "status": "success",
+    "timestamp": "2025-04-17T06:45:01.710Z"
+  },
+  {
+    "to": "6285894706220",
+    "message": "Testing whatsapp dari aplikasi buatan sendiri~",
+    "status": "success",
+    "timestamp": "2025-04-17T07:02:48.744Z"
+  }
+]

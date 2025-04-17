@@ -163,7 +163,7 @@ client.on('auth_failure', msg => {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-app.post('/send-wa', async (req, res) => {
+app.post('/send-pdf', async (req, res) => {
   try {
     const { nama, nomor } = req.body;
     const filename = `${nama.replace(/\s+/g, "_")}_slip_gaji.pdf`;
@@ -187,6 +187,79 @@ app.post('/send-wa', async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Gagal mengirim WhatsApp', error: err.message });
   }
+});
+
+app.post('/logout', async (req, res) => {
+    try {
+        await client.logout(); // Logout dari WhatsApp
+        fs.rmSync('./.wwebjs_auth', { recursive: true, force: true }); // Hapus folder penyimpanan sesi
+        qrCodeData = null;
+        console.log('Autentikasi telah dihapus.');
+        res.status(200).json({ message: 'Autentikasi berhasil dihapus.' });
+    } catch (err) {
+        res.status(500).json({ message: 'Gagal menghapus autentikasi.', error: err.message });
+    }
+});
+
+app.post('/send-wa', async (req, res) => {
+  const { to, message } = req.body;
+
+  if (!to || !message) {
+    return res.status(400).json({ message: 'Nomor tujuan dan pesan harus disediakan.' });
+  }
+
+  const logPath = path.join(__dirname, 'report', 'log.json');
+  const logEntry = {
+    to,
+    message,
+    status: '',
+    timestamp: new Date().toISOString()
+  };
+
+  try {
+    await client.sendMessage(`${to}@c.us`, message);
+    logEntry.status = 'success';
+    res.status(200).json({ message: 'Pesan berhasil dikirim.' });
+  } catch (err) {
+    logEntry.status = 'failed';
+    logEntry.error = err.message;
+    res.status(500).json({ message: 'Gagal mengirim pesan.', error: err.message });
+  } finally {
+    // Update log JSON
+    fs.readFile(logPath, 'utf8', (err, data) => {
+      let logs = [];
+      if (!err && data) {
+        try {
+          logs = JSON.parse(data);
+        } catch (e) {
+          console.error('Gagal parse log JSON:', e.message);
+        }
+      }
+
+      logs.push(logEntry);
+
+      fs.writeFile(logPath, JSON.stringify(logs, null, 2), 'utf8', err => {
+        if (err) console.error('Gagal menyimpan log:', err.message);
+      });
+    });
+  }
+});
+
+app.get('/logs', (req, res) => {
+  const logPath = path.join(__dirname, 'report', 'log.json');
+
+  fs.readFile(logPath, 'utf8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ message: 'Gagal membaca file log.', error: err.message });
+    }
+
+    try {
+      const logs = JSON.parse(data);
+      res.status(200).json(logs);
+    } catch (parseErr) {
+      res.status(500).json({ message: 'Gagal parse isi file JSON.', error: parseErr.message });
+    }
+  });
 });
 
 client.initialize();

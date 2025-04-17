@@ -116,10 +116,9 @@ export default function SignInForm() {
                     name="username"
                     value={form.username}
                     onChange={handleChange}
+                    error={errors.username ? true : false}
+                    hint={errors.username}
                   />
-                  {errors.username && (
-                    <p className="mt-1 text-sm text-red-500">{errors.username}</p>
-                  )}
                 </div>
                 <div>
                   <Label>
@@ -132,6 +131,8 @@ export default function SignInForm() {
                       name="password"
                       value={form.password}
                       onChange={handleChange}
+                      error={errors.password ? true : false}
+                      hint={errors.password}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -144,9 +145,6 @@ export default function SignInForm() {
                       )}
                     </span>
                   </div>
-                  {errors.password && (
-                    <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-                  )}
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">

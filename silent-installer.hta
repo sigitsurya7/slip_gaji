@@ -1,0 +1,52 @@
+<html>
+<head>
+  <title>Installing...</title>
+  <HTA:APPLICATION 
+    ID="app"
+    BORDER="dialog"
+    BORDERSTYLE="complex"
+    CAPTION="yes"
+    SHOWINTASKBAR="yes"
+    SINGLEINSTANCE="yes"
+    SYSMENU="yes"
+    WINDOWSTATE="normal">
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    #progress { width: 100%; height: 20px; background: #eee; margin-top: 20px; }
+    #bar { height: 100%; width: 0%; background: #4caf50; transition: width 0.2s; }
+  </style>
+</head>
+<body>
+  <h3>Installing dependencies...</h3>
+  <div id="progress"><div id="bar"></div></div>
+  <p id="status">Mohon tunggu, sedang install...</p>
+
+  <script type="text/javascript">
+    var bar = document.getElementById("bar");
+    var status = document.getElementById("status");
+    var width = 0;
+
+    // Update loading bar
+    var progressInterval = setInterval(function () {
+      if (width < 95) {
+        width += Math.floor(Math.random() * 3); // acak biar gak bosen
+        bar.style.width = width + "%";
+      }
+    }, 300);
+
+    // Jalankan batch script
+    var shell = new ActiveXObject("WScript.Shell");
+    shell.Run("install.bat", 0, true); // tunggu sampai selesai
+
+    // Setelah selesai
+    clearInterval(progressInterval);
+    bar.style.width = "100%";
+    status.innerText = "Install selesai! Silakan ngopi";
+
+    // Tutup otomatis dalam 3 detik
+    setTimeout(function () {
+      window.close();
+    }, 3000);
+  </script>
+</body>
+</html>

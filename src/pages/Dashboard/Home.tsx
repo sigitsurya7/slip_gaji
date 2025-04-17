@@ -132,7 +132,7 @@ export default function Home() {
       
       try {
         await toast.promise(
-          axios.post('http://localhost:3001/send-wa', data),
+          axios.post('http://localhost:3001/send-pdf', data),
           {
             loading: `⏳ Kirim PDF untuk: ${nama}`,
             success: `✅ Berhasil kirim PDF: ${nama}`,
@@ -261,7 +261,7 @@ export default function Home() {
                       {paginatedData.map((row, idx) => (
                         <TableRow key={idx}>
                           {columns.map((_, colIdx) => (
-                            <TableCell key={colIdx} className="px-5 py-4 sm:px-6 text-start text-sm dark:text-white">
+                            <TableCell key={colIdx} className="px-5 py-4 sm:px-6 text-start text-sm dark:text-gray-400 text-nowrap">
                               {row[colIdx] ?? ""}
                             </TableCell>
                           ))}
@@ -295,7 +295,7 @@ export default function Home() {
                 )}
               </div>
             ) : (
-              <p className="font-semibold text-center text-md my-8 underline underline-offset-1"> Excel Belum diimport ke dalam sistem </p>
+              <p className="font-semibold text-center text-md my-8 underline underline-offset-1 dark:text-gray-400"> Excel Belum diimport ke dalam sistem </p>
             )}
 
             {data.length > 0 && (
