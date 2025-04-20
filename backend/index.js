@@ -8,6 +8,19 @@ const angkaTerbilang = require('@develoka/angka-terbilang-js')
 const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
 
+const os = require('os');
+const { getChromePath } = require('./chrome');
+
+// Ganti path slips dan report
+const runtimeDir = path.join(os.tmpdir(), 'kwala_sender_runtime');
+const slipsDir = path.join(runtimeDir, 'slips');
+const reportDir = path.join(runtimeDir, 'report');
+const authDir = path.join(runtimeDir, '.wwebjs_auth');
+
+if (!fs.existsSync(slipsDir)) fs.mkdirSync(slipsDir, { recursive: true });
+if (!fs.existsSync(reportDir)) fs.mkdirSync(reportDir, { recursive: true });
+if (!fs.existsSync(authDir)) fs.mkdirSync(authDir, { recursive: true });
+
 app.use(cors());
 app.use(express.json());
 
@@ -15,12 +28,6 @@ const port = 5000;
 
 let qrCodeData = null;
 let client;
-
-// Pastikan folder slips sudah ada
-const slipsDir = path.join(__dirname, 'slips');
-if (!fs.existsSync(slipsDir)) {
-  fs.mkdirSync(slipsDir);
-}
 
 // Terbilang fungsi sederhana
 function terbilang(angka) {
@@ -109,7 +116,7 @@ app.post('/generate-pdf', async (req, res) => {
     await browser.close();
 
     const filename = `${data.dataDiri.nama.replace(/\s+/g, "_")}_slip_gaji.pdf`;
-    const filePath = path.join(__dirname, 'slips', filename);
+    const filePath = path.join(slipsDir, filename);
     fs.writeFileSync(filePath, pdfBuffer);
 
     res.json({ message: 'PDF berhasil dibuat', filename });
@@ -136,10 +143,16 @@ app.get('/qr', async (req, res) => {
     }
 });
 
+const chromePath = getChromePath();
+
 client = new Client({
-  authStrategy: new LocalAuth({ clientId: 'slip-gaji' }),
+  authStrategy: new LocalAuth({
+    clientId: 'slip-gaji',
+    dataPath: authDir
+  }),
   puppeteer: {
     headless: true,
+    executablePath: chromePath,
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   },
 });
@@ -192,7 +205,7 @@ app.post('/send-pdf', async (req, res) => {
 app.post('/logout', async (req, res) => {
     try {
         await client.logout(); // Logout dari WhatsApp
-        fs.rmSync('./.wwebjs_auth', { recursive: true, force: true }); // Hapus folder penyimpanan sesi
+        fs.rmSync(authDir, { recursive: true, force: true }); // Hapus folder penyimpanan sesi
         qrCodeData = null;
         console.log('Autentikasi telah dihapus.');
         res.status(200).json({ message: 'Autentikasi berhasil dihapus.' });
@@ -208,7 +221,7 @@ app.post('/send-wa', async (req, res) => {
     return res.status(400).json({ message: 'Nomor tujuan dan pesan harus disediakan.' });
   }
 
-  const logPath = path.join(__dirname, 'report', 'log.json');
+  const logPath = path.join(reportDir, 'log.json');
   const logEntry = {
     to,
     message,

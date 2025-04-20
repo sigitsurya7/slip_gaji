@@ -1,15 +1,51 @@
 {
-  "name": "tailadmin-react",
+  "name": "kwala_sender-app",
   "private": true,
-  "version": "2.0.2",
+  "version": "1.0.2",
   "type": "module",
+  "main": "main.mjs",
   "scripts": {
     "dev:frontend": "vite",
     "dev:backend": "cd backend && npm run dev",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "build": "tsc -b && vite build",
+    "build:electron": "npm run build && electron-builder",
     "lint": "eslint .",
     "preview": "vite preview"
+  },
+  "build": {
+    "appId": "com.kwala_sender.app",
+    "productName": "Kwala WhatsApp Sender",
+    "directories": {
+      "output": "dist_electron"
+    },
+    "files": [
+      "dist/**",
+      "main.mjs",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build_backend/kwala_sender-app.exe",
+        "to": "backend/kwala_sender-app.exe"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    }
+  },
+  "bin": "backend/index.js",
+  "pkg": {
+    "scripts": "backend/**/*.js",
+    "targets": [
+      "node18-win-x64"
+    ],
+    "outputPath": "backend"
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",
@@ -47,6 +83,8 @@
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^35.2.0",
+    "electron-builder": "^26.0.12",
     "eslint": "^9.19.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.18",

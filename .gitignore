@@ -8,12 +8,18 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+# Folder Build
 dist
 dist-ssr
+build_backend
+dist_electron
+
 *.local
 .wwebjs_auth
 .wwebjs_cache
 *.pdf
+note.txt
+kwala_sender-app.exe
 
 # Editor directories and files
 .vscode/*

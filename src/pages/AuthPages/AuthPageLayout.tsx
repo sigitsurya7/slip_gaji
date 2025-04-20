@@ -26,7 +26,7 @@ export default function AuthLayout({
                 <img
                   width={231}
                   height={48}
-                  src="/images/logo/kwala-logo.webp"
+                  src="./images/logo/kwala-logo.webp"
                   alt="Logo"
                 />
               </Link>
