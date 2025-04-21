@@ -24,7 +24,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  const backendPath = path.join(process.resourcesPath, 'backend', 'kwala_sender-app.exe')
+  const backendPath = path.join(process.resourcesPath, 'backend', 'backend.exe')
 
   backendProcess = spawn(backendPath, {
     cwd: path.dirname(backendPath),

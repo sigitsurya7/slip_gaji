@@ -7,7 +7,7 @@
   "scripts": {
     "dev:frontend": "vite",
     "dev:backend": "cd backend && npm run dev",
-    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev": "vite",
     "build": "tsc -b && vite build",
     "build:electron": "npm run build && electron-builder",
     "lint": "eslint .",
@@ -26,12 +26,13 @@
     ],
     "extraResources": [
       {
-        "from": "build_backend/kwala_sender-app.exe",
-        "to": "backend/kwala_sender-app.exe"
+        "from": "backend/dist/backend.exe",
+        "to": "backend/backend.exe"
       }
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "icon": "public/favicon.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -40,13 +41,6 @@
     }
   },
   "bin": "backend/index.js",
-  "pkg": {
-    "scripts": "backend/**/*.js",
-    "targets": [
-      "node18-win-x64"
-    ],
-    "outputPath": "backend"
-  },
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",

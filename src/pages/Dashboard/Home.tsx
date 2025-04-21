@@ -96,7 +96,7 @@ export default function Home() {
       
       try {
         await toast.promise(
-          axios.post('http://localhost:3001/generate-pdf', value),
+          axios.post('http://localhost:3001/api/pdf/generate-pdf', value),
           {
             loading: `⏳ Menggenerate PDF untuk: ${nama}`,
             success: `✅ Berhasil generate PDF: ${nama}`,

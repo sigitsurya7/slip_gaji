@@ -33,7 +33,7 @@ export default function WhatsAppAuth() {
   const [data, setData] = useState<any[]>([])
 
   function getData(){
-    axios.get('http://localhost:3001/logs').then((response) => {
+    axios.get('http://localhost:3001/api/whatsapp/logs').then((response) => {
         setData(response.data)
     }).catch((error) => {
         console.log(error)
@@ -43,7 +43,7 @@ export default function WhatsAppAuth() {
   useEffect(() => {
     const fetchQR = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/qr");
+        const res = await axios.get("http://localhost:3001/api/whatsapp/qr");
         if (res.data.qr) {
           setImg(res.data.qr);
           setSuccess(false);
@@ -72,7 +72,7 @@ export default function WhatsAppAuth() {
   const kirimWa = async () => {
     try {
         await toast.promise(
-          axios.post('http://localhost:3001/send-wa', form),
+          axios.post('http://localhost:3001/api/whatsapp/send-wa', form),
           {
             loading: `⏳ Kirim pesan whatsapp untuk: ${form.to}`,
             success: `✅ Berhasil kirim pesan whatsapp untuk: ${form.to}`,

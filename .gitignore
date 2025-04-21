@@ -20,6 +20,7 @@ dist_electron
 *.pdf
 note.txt
 kwala_sender-app.exe
+backend.exe
 
 # Editor directories and files
 .vscode/*
@@ -31,3 +32,5 @@ kwala_sender-app.exe
 *.njsproj
 *.sln
 *.sw?
+
+.env
