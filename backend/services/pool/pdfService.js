@@ -70,9 +70,9 @@ const generatePDF = async (data) => {
     const filePath = path.join(slipsDir, filename);
     fs.writeFileSync(filePath, pdfBuffer);
 
-    res.json({ message: 'PDF berhasil dibuat', filename, filePath });
+    return { success: true, filename, filePath };
   } catch (error) {
-    res.status(500).json({ message: 'Terjadi kesalahan saat generate PDF' });
+    return { success: false, message: 'Terjadi kesalahan saat generate PDF' };
   }
 };
 

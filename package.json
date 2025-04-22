@@ -1,21 +1,23 @@
 {
   "name": "kwala_sender-app",
   "private": true,
-  "version": "1.0.2",
+  "version": "1.0.0",
   "type": "module",
   "main": "main.mjs",
+  "author": "Zeeva",
+  "description": "Kwala Sender App Adalah aplikasi untuk mengirim dan membuat slip gaji ke whatsapp",
   "scripts": {
     "dev:frontend": "vite",
     "dev:backend": "cd backend && npm run dev",
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:electron": "npm run build && electron-builder",
+    "build:electron": "npm run build && dotenv -e .env -- electron-builder --publish always",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "build": {
     "appId": "com.kwala_sender.app",
-    "productName": "Kwala WhatsApp Sender",
+    "productName": "Kwala",
     "directories": {
       "output": "dist_electron"
     },
@@ -24,12 +26,6 @@
       "main.mjs",
       "package.json"
     ],
-    "extraResources": [
-      {
-        "from": "backend/dist/backend.exe",
-        "to": "backend/backend.exe"
-      }
-    ],
     "win": {
       "target": "nsis",
       "icon": "public/favicon.ico"
@@ -37,10 +33,19 @@
     "nsis": {
       "oneClick": false,
       "perMachine": true,
-      "allowToChangeInstallationDirectory": true
-    }
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "public/favicon.ico",
+      "uninstallerIcon": "public/favicon.ico",
+      "license": "license.md"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "sigitsurya7",
+        "repo": "slip_gaji"
+      }
+    ]
   },
-  "bin": "backend/index.js",
   "dependencies": {
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
@@ -54,6 +59,7 @@
     "axios": "^1.8.4",
     "clsx": "^2.1.1",
     "concurrently": "^9.1.2",
+    "electron-updater": "^6.6.2",
     "flatpickr": "^4.6.13",
     "html2canvas": "^1.4.1",
     "jspdf": "^3.0.1",
@@ -77,6 +83,7 @@
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.4",
+    "dotenv-cli": "^8.0.0",
     "electron": "^35.2.0",
     "electron-builder": "^26.0.12",
     "eslint": "^9.19.0",

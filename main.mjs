@@ -1,14 +1,14 @@
 import { app, BrowserWindow } from 'electron'
 import path from 'path'
-import { spawn } from 'child_process'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
+import updater from 'electron-updater'
+const { autoUpdater } = updater
 
 // Ini untuk dapatkan __dirname setara di ESM
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-let backendProcess
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -24,19 +24,13 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  const backendPath = path.join(process.resourcesPath, 'backend', 'backend.exe')
-
-  backendProcess = spawn(backendPath, {
-    cwd: path.dirname(backendPath),
-    stdio: 'inherit',
-  })
-
   createWindow()
+
+  autoUpdater.checkForUpdatesAndNotify()
 })
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
-    if (backendProcess) backendProcess.kill()
     app.quit()
   }
 })
