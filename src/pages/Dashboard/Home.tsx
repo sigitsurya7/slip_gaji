@@ -132,7 +132,7 @@ export default function Home() {
       
       try {
         await toast.promise(
-          axios.post('http://localhost:3001/send-pdf', data),
+          axios.post('http://localhost:3001/api/whatsapp/send-pdf', data),
           {
             loading: `⏳ Kirim PDF untuk: ${nama}`,
             success: `✅ Berhasil kirim PDF: ${nama}`,

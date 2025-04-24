@@ -9,6 +9,7 @@ const { getChromePath } = require('../hooks/chrome');
 const runtimeDir = path.join(os.tmpdir(), 'kwala_sender_runtime');
 const authDir = path.join(runtimeDir, '.wwebjs_auth');
 const reportDir = path.join(runtimeDir, 'report');
+const slipsDir = path.join(runtimeDir, 'slips');
 if (!fs.existsSync(reportDir)) fs.mkdirSync(reportDir, { recursive: true });
 
 const logPath = path.join(reportDir, 'log.json');
