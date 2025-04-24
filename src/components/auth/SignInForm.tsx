@@ -6,6 +6,7 @@ import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,66 +24,55 @@ export default function SignInForm() {
 
   const navigate = useNavigate()
 
-  const loginfunc = (e: React.FormEvent<HTMLFormElement>) => {
+  const loginfunc = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  
+    const { username, password } = form
 
-    const { username, password } = form;
-
-    let hasError = false;
     const newErrors = {
       username: "",
       password: "",
     };
-
-    if (!form.username.trim()) {
+  
+    let hasError = false
+  
+    if (!username.trim()) {
       newErrors.username = "Form username tidak boleh kosong";
-      hasError = true;
+      hasError = true
     }
-    if (!form.password.trim()) {
+    if (!password.trim()) {
       newErrors.password = "Form password tidak boleh kosong";
-      hasError = true;
+      hasError = true
     }
-
+  
     setErrors(newErrors);
-
+  
     if (hasError) {
       setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 500); // reset shake class
+      setTimeout(() => setIsShaking(false), 500)
       return;
     }
 
-    if(username == 'admin'){
-      if(password == 'admin'){
-        toast.promise(
-          new Promise<void>((resolve) => {
-            setTimeout(() => {
-              localStorage.setItem("token", "yahahaha token nich");
-              resolve();
-            }, 1200);
-          }),
-          {
-            loading: "Tunggu sebentar yaa...",
-            success: "Selamat datang 😆!",
-            error: "Duh ada error",
-          }
-        ).then(() => {
-          setTimeout(() => {
-            navigate("/", { replace: true });
-          }, 2000);
-        });
-      }else{
-        newErrors.password = "Password salah";
-        setIsShaking(true);
-        setTimeout(() => setIsShaking(false), 500); // reset shake class
-        return;
-      }
-    }else{
-      newErrors.username = "User tidak ditemukan";
-      setIsShaking(true);
-      setTimeout(() => setIsShaking(false), 500); // reset shake class
-      return;
+    try {
+      const response = await toast.promise(
+        axios.post('http://localhost:3001/api/login', { username, password }),
+        {
+          loading: "🔐 Sedang login...",
+          success: (res) => res.data.message || "✅ Login berhasil!",
+          error: (err) => err.response?.data?.message || "❌ Terjadi kesalahan.",
+        }
+      )
+
+      localStorage.setItem('token', 'trial-version')
+      localStorage.setItem('nama', response.data.user.nama)
+      setTimeout(() => {
+        navigate("/", { replace: true })
+      }, 3000)
+  
+    } catch (error: any) {
+      console.error("Login error:", error)
     }
-  }
+  }  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

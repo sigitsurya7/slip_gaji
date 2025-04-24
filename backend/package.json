@@ -15,6 +15,7 @@
     "scripts": [
       "index.js",
       "services/**/*.js",
+      "utils/*.js",
       "routes/*.js"
     ],
     "targets": [

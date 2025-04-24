@@ -26,7 +26,11 @@ const chromePath = getChromePath();
 let client;
 
 // Inisialisasi client WhatsApp
-const initializeClient = () => {
+const initializeClient = (shouldInitialize) => {
+  if (!shouldInitialize) {
+    console.log('❌ WhatsApp client NOT initialized. Cutoff date has passed.');
+    return;
+  }
   client = new Client({
     authStrategy: new LocalAuth({
       clientId: 'slip-gaji',
