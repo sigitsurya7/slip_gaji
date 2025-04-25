@@ -45,15 +45,15 @@ const initializeClient = (shouldInitialize) => {
 
   client.on('qr', (qr) => {
     qrCodeData = qr;
-    console.log('ke update')
+    console.log('QR Sudah Tersedia')
   });
 
   client.on('ready', () => {
-    console.log('WhatsApp Client is ready!');
+    console.log('WhatsApp Client sudah siap!');
   });
 
   client.on('authenticated', () => {
-    console.log('WhatsApp authenticated');
+    console.log('WhatsApp sudah terautentikasi');
   });
 
   client.on('auth_failure', msg => {
@@ -165,10 +165,22 @@ const sendPdf = async (req, res) => {
     }
 }
 
+const logoutWa = async (req, res) => {
+  try {
+      await client.logout()
+      fs.rmSync(authDir, { recursive: true, force: true })
+      qrCodeData = null;
+      console.log('Autentikasi telah dihapus.');
+      res.status(200).json({ message: 'Autentikasi berhasil dihapus.' });
+  } catch (err) {
+      res.status(500).json({ message: 'Gagal menghapus autentikasi.', error: err.message });
+  }
+}
+
 // Fungsi untuk kirim pesan
 const sendMessage = async (phoneNumber, message) => {
   const phoneWithSuffix = phoneNumber.includes('@c.us') ? phoneNumber : `${phoneNumber}@c.us`;
   await client.sendMessage(phoneWithSuffix, message);
 };
 
-module.exports = { initializeClient, getQRCode, sendWa, getLogs, sendPdf };
+module.exports = { initializeClient, getQRCode, sendWa, getLogs, sendPdf, logoutWa };

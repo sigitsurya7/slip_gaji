@@ -40,26 +40,34 @@ export default function WhatsAppAuth() {
     })
   }
 
-  useEffect(() => {
-    const fetchQR = async () => {
-      try {
-        const res = await axios.get("http://localhost:3001/api/whatsapp/qr");
-        if (res.data.qr) {
-          setImg(res.data.qr);
-          setSuccess(false);
-        } else if (res.data.message === "Sudah terautentikasi") {
-          setSuccess(true);
-        }
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
+  const fetchQR = async () => {
+    try {
+      const res = await axios.get("http://localhost:3001/api/whatsapp/qr");
+  
+      if (res.data.qr) {
+        setImg(res.data.qr);
+        setSuccess(false);
+      } else if (res.data.message === "Sudah terautentikasi") {
+        setSuccess(true);
       }
-    };
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
 
-    fetchQR();
+  useEffect(() => {
+    const interval = setInterval(async () => {
+        await fetchQR()
+    }, 5000)
+    
+    fetchQR()
     getData()
-  }, []);
+  
+    return () => clearInterval(interval)
+  }, []);  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -67,6 +75,26 @@ export default function WhatsAppAuth() {
       ...prevForm,
       [name]: value,
     }));
+  }
+
+  const logOut = async () => {
+    try{
+        await toast.promise(
+            axios.get('http://localhost:3001/api/whatsapp/logout'),
+            {
+                loading: `⏳ Proses Logout Tunggu Sebentar`,
+                success: `✅ Berhasil Logout dari whatsapp`,
+                error: `❌ Gagal Logout dari whatsapp`
+            }
+        )
+
+        setSuccess(false)
+        setImg(null)        
+        setLoading(true)
+        fetchQR()
+    }catch (error){
+        console.log(error)
+    }
   }
 
   const kirimWa = async () => {
@@ -96,7 +124,7 @@ export default function WhatsAppAuth() {
 
       <div className="grid grid-cols-2 gap-4">
         
-        <div className="rounded-2xl border border-gray-200 bg-gray-100 p-4 dark:border-gray-800 dark:bg-white/[0.03]">
+        <div className="rounded-2xl border flex flex-col gap-4 border-gray-200 bg-gray-100 p-4 dark:border-gray-800 dark:bg-white/[0.03]">
             <div className="flex items-center justify-center h-full bg-white p-4 rounded-xl border boder-gray-200 dark:border-white/[0.05] dark:bg-white/[0.05]">
                 {loading ? (
                 <p>Loading...</p>
@@ -113,6 +141,19 @@ export default function WhatsAppAuth() {
                 <p>QR tidak tersedia atau belum diinisialisasi.</p>
                 )}
             </div>
+
+            {
+                success ?
+                (
+                    <Button
+                        size="sm"
+                        onClick={logOut}
+                    >
+                        Log Out
+                    </Button>
+                )
+                : ''
+            }
         </div>
 
         <div className="rounded-2xl border border-gray-200 p-1 h-max bg-gray-100 dark:border-gray-800 dark:bg-white/[0.03]">
