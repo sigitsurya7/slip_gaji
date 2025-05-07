@@ -13,6 +13,7 @@ dist
 dist-ssr
 build_backend
 dist_electron
+backend/utils/generateEncryptedUser.js
 
 *.local
 .wwebjs_auth
